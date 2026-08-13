@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="AI Email Intelligence System - Automated classification, urgency scoring, action item extraction, thread summarization, and HITL response workflow.">
+  <title>AI Email Intelligence & Response Workflow</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <!-- App Header -->
+  <header class="app-header">
+    <div class="brand">
+      <div class="brand-icon">⚡</div>
+      <h1 class="brand-title">Nasu's MailIntel Agentic AI</h1>
+      <span class="brand-tag">v2.4 HITL</span>
+    </div>
+<div class="header-actions">
+      <div class="stats-pill">
+        <div class="stat-item">
+          <span>Processed Today:</span>
+          <span class="stat-val" id="stat-processed">24</span>
+        </div>
+        <span style="color: var(--border-color)">|</span>
+        <div class="stat-item">
+          <span>Pending HITL:</span>
+          <span class="stat-val" style="color: var(--p0-critical)" id="stat-pending">3</span>
+        </div>
+        <span style="color: var(--border-color)">|</span>
+        <div class="stat-item">
+          <span>Avg Agent Latency:</span>
+          <span class="stat-val" style="color: var(--success)">1.2s</span>
+        </div>
+      </div>
+      <button class="btn-primary" id="btn-custom-email">
+        <span>+ Test Custom Email</span>
+      </button>
+    </div>
+  </header>
+ <!-- Main Container -->
+  <div class="app-container">
+    <!-- Sidebar Navigation -->
+    <aside class="sidebar">
+      <div>
+        <div class="nav-section-title">Email Workspace</div>
+        <ul class="nav-list">
+          <li class="nav-item active" data-filter="all">
+            <span><span class="nav-item-icon">📥</span> Inbox</span>
+            <span class="nav-badge" id="badge-all">5</span>
+          </li>
+          <li class="nav-item" data-filter="urgent">
+            <span><span class="nav-item-icon">🚨</span> P0 Critical</span>
+            <span class="nav-badge urgent" id="badge-p0">2</span>
+          </li>
+          <li class="nav-item" data-filter="hitl">
+            <span><span class="nav-item-icon">✍️</span> Awaiting Approval</span>
+            <span class="nav-badge" id="badge-hitl">3</span>
+          </li>
+          <li class="nav-item" data-filter="dispatched">
+            <span><span class="nav-item-icon">✅</span> Dispatched Log</span>
+            <span class="nav-badge" id="badge-sent">12</span>
+          </li>
+        </ul>
+      </div>
+      <div>
+        <div class="nav-section-title">Agent System</div>
+        <ul class="nav-list">
+          <li class="nav-item" id="nav-agent-pipeline">
+            <span><span class="nav-item-icon">🤖</span> Agent Pipeline</span>
+          </li>
+          <li class="nav-item" id="nav-analytics">
+            <span><span class="nav-item-icon">📊</span> Category Analytics</span>
+          </li>
+        </ul>
+      </div>
+    </aside>
+    <!-- Email List Pane -->
+    <section class="email-list-pane">
+      <div class="pane-header">
+        <div class="search-box">
+          <span class="search-icon">🔍</span>
+          <input type="text" class="search-input" id="search-input" placeholder="Search emails, senders, topics...">
+        </div>
+        <div class="filter-tags">
+          <button class="filter-chip active" data-urgency="all">All Priorities</button>
+          <button class="filter-chip" data-urgency="P0">P0 Urgent</button>
+          <button class="filter-chip" data-urgency="P1">P1 High</button>
+          <button class="filter-chip" data-urgency="P2">P2 Medium</button>
+          <button class="filter-chip" data-urgency="P3">P3 Low</button>
+        </div>
+      </div>
+      <div class="email-items-container" id="email-list-container">
+        <!-- Rendered dynamically -->
+      </div>
+    </section>
+    <!-- Detail Workspace -->
+    <main class="detail-workspace">
+      <!-- Workspace Tabs -->
+      <div class="workspace-tabs">
+        <div class="ws-tab active" data-tab="intelligence">
+          <span>🧠 Intelligence & HITL Studio</span>
+        </div>
+        <div class="ws-tab" data-tab="thread">
+          <span>💬 Raw Email & Thread</span>
+        </div>
+        <div class="ws-tab" data-tab="inspector">
+          <span>⚙️ Multi-Agent Execution Graph</span>
+        </div>
+      </div>
+         <div class="workspace-content" id="workspace-content">
+        
+        <!-- Email Header -->
+        <div class="email-header-card" id="email-header-card">
+          <div class="email-title-row">
+            <h2 class="email-subject" id="view-subject">Select an email to begin analysis...</h2>
+            <div id="view-urgency-badge"></div>
+          </div>
+          <div class="email-meta-bar">
+            <div class="sender-info">
+              <div class="avatar" id="view-avatar">?</div>
+              <div>
+                <strong id="view-sender-name">System</strong>
+                <span id="view-sender-email" style="color: var(--text-muted); font-size: 0.8rem;">(select an email)</span>
+              </div>
+            </div>
+            <div id="view-timestamp">--:--</div>
+          </div>
+        </div>
+         <div class="tab-pane active" id="pane-intelligence">
+          
+          <!-- AI Insights Grid -->
+          <div class="ai-insights-grid">
+            
+            <!-- Urgency & Category Card -->
+            <div class="insight-card">
+              <div class="card-heading">🎯 AI Urgency Assessment</div>
+              <div class="urgency-score-display">
+                <div class="score-circle" id="urgency-circle">--</div>
+                <div>
+                  <div style="font-weight: 700; font-size: 1rem;" id="urgency-level-title">Urgency Level</div>
+                  <div style="font-size: 0.8rem; color: var(--text-muted); margin-top: 2px;" id="urgency-rationale">Select email to compute agent rationale</div>
+                </div>
+              </div>
+              <div style="font-size: 0.8rem; padding: 6px 10px; background: rgba(255,255,255,0.03); border-radius: var(--radius-sm);">
+                <strong>Category:</strong> <span id="view-category-label">--</span>
+              </div>
+            </div>
+ <!-- Action Items Card -->
+            <div class="insight-card">
+              <div class="card-heading">⚡ Extracted Action Items</div>
+              <ul class="action-items-list" id="action-items-list">
+                <li class="action-item"><span class="action-text">No email selected</span></li>
+              </ul>
+            </div>
+            <!-- Executive Summary Card -->
+            <div class="insight-card" style="grid-column: 1 / -1;">
+              <div class="card-heading">📝 Thread Summary</div>
+              <div id="view-executive-summary" style="font-size: 0.9rem; line-height: 1.5; color: #cbd5e1;">
+                Select an email to view thread summary distilled by Summarizer Agent.
+              </div>
+            </div>
+ </div>
+          <!-- HITL Response Studio -->
+          <div class="draft-studio-card">
+            <div class="studio-header">
+              <div style="display: flex; align-items: center; gap: 8px;">
+                <span style="font-size: 1.2rem;">✍️</span>
+                <strong>Human-in-the-Loop (HITL) Response Studio</strong>
+              </div>
+              <div class="draft-tone-selector">
+                <span style="font-size: 0.78rem; color: var(--text-muted)">Tone:</span>
+                <button class="tone-btn active" data-tone="Professional">Professional</button>
+                <button class="tone-btn" data-tone="Empathetic">Empathetic</button>
+                <button class="tone-btn" data-tone="Concise">Concise</button>
+                <button class="tone-btn" data-tone="Direct">Direct</button>
+              </div>
+            </div>
+            <textarea class="draft-textarea" id="draft-textarea" placeholder="AI Agent is drafting response..."></textarea>
+            <div class="prompt-refinement-bar">
+              <input type="text" class="prompt-input" id="refinement-input" placeholder="Give custom instructions to AI (e.g. 'Add a note that we are free for a call on Thursday at 3 PM')...">
+              <button class="btn-secondary" id="btn-refine-draft">🪄 Refine Draft</button>
+            </div>
+            <div class="draft-actions">
+              <div style="font-size: 0.8rem; color: var(--text-muted);">
+                Status: <span id="draft-status-label" style="color: var(--p1-high); font-weight: 600;">Awaiting Human Review</span>
+              </div>
+              <div style="display: flex; gap: 10px;">
+                <button class="btn-secondary" id="btn-reject-draft">❌ Reject / Archive</button>
+                <button class="btn-success" id="btn-approve-send">🚀 Approve & Send Response</button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- Tab 2: Raw Email & Thread -->
+        <div class="tab-pane" id="pane-thread" style="display: none;">
+          <div class="email-body-box" id="raw-email-body">
+            Select an email to view full raw message text.
+          </div>
+        </div>
+        <!-- Tab 3: Multi-Agent Inspector -->
+        <div class="tab-pane" id="pane-inspector" style="display: none;">
+          <div class="agent-flow-container">
+            <div style="display: flex; align-items: center; justify-content: space-between;">
+                 <strong>Multi-Agent Pipeline Graph</strong>
+              <button class="btn-secondary" id="btn-rerun-pipeline" style="font-size: 0.75rem; padding: 4px 10px;">🔄 Re-run Agent Pipeline</button>
+            </div>
+            <div class="flow-nodes" id="pipeline-flow-nodes">
+              <div class="agent-node completed" id="node-parse">
+                <span class="node-icon">📥</span>
+                <div class="node-info">
+                  <span class="node-name">Parser Agent</span>
+                  <span class="node-status">12ms • Done</span>
+                </div>
+              </div>
+              <span class="flow-arrow">➔</span>
+              <div class="agent-node completed" id="node-classify">
+                <span class="node-icon">🎯</span>
+                <div class="node-info">
+                  <span class="node-name">Classifier Agent</span>
+                  <span class="node-status">145ms • Done</span>
+                </div>
+              </div>
+              <span class="flow-arrow">➔</span>
+              <div class="agent-node completed" id="node-extract">
+                <span class="node-icon">⚡</span>
+                <div class="node-info">
+                  <span class="node-name">Extractor Agent</span>
+                  <span class="node-status">210ms • Done</span>
+                </div>
+                 </div>
+            </div>
+            <div style="margin-top: 8px;">
+              <div style="font-weight: 600; font-size: 0.85rem; margin-bottom: 6px; color: var(--text-secondary);">Agent Execution Telemetry & Reasoning Logs:</div>
+              <div class="agent-logs-box" id="agent-logs-box">
+                [SYSTEM] Ready to observe agent execution trace...
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+  <!-- Custom Email Tester Modal -->
+  <div class="modal-overlay" id="custom-email-modal">
+    <div class="modal-card">
+      <div class="modal-title">
+        <span>⚡ Test Custom Email with Agentic System</span>
+        <button id="btn-close-modal" style="background: none; border: none; color: var(--text-muted); cursor: pointer; font-size: 1.2rem;">✕</button>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Sender Name & Email</label>
+        <input type="text" class="form-input" id="input-sender" placeholder="e.g. Sarah Jenkins (sarah@acmeenterprise.com)">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Email Subject</label>
+        <input type="text" class="form-input" id="input-subject" placeholder="e.g. CRITICAL: Payment API Gateway Failure in Production">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Email Message Body / Thread</label>
+        <textarea class="form-textarea" id="input-body" placeholder="Paste raw email text here..."></textarea>
+      </div>
+       <div style="display: flex; justify-content: flex-end; gap: 10px; margin-top: 10px;">
+        <button class="btn-secondary" id="btn-cancel-modal">Cancel</button>
+        <button class="btn-primary" id="btn-run-custom-pipeline">🚀 Run AI Pipeline</button>
+      </div>
+    </div>
+  </div>
+  <script src="app.js"></script>
+</body>
+</html>     
